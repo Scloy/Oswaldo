@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dieta e Sabor do Sêmen: Um Guia Interativo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Subtle Peach -->
+    <!-- Application Structure Plan: A single-page application with a sticky top navigation bar for smooth scrolling to thematic sections. The structure is designed for exploration rather than linear reading. It starts with a "Basics" section featuring an interactive donut chart for composition and a visual flow diagram. The "Science" section uses a clear "Fact vs. Myth" layout. The core is the "Interactive Guide," where users can filter foods that improve or worsen flavor. The final "Seminal Health" section uses a comparative bar chart to link anecdotal flavor claims with scientifically-backed health impacts, reinforcing the report's holistic message. This non-linear, interactive structure enhances user engagement and understanding. -->
+    <!-- Visualization & Content Choices: 1. Semen Composition: Donut chart (Chart.js) to visually represent percentages, more engaging than a list. 2. Metabolic Pathway: HTML/CSS flow diagram to simplify the biological process. 3. Interactive Food Guide: A filterable grid of cards (HTML/JS) for user-driven exploration of foods, superior to a static table. 4. Flavor vs. Quality Chart: A horizontal bar chart (Chart.js) to visually compare anecdotal flavor reports with scientific health data for each food item, directly illustrating the report's main conclusion. All choices prioritize interaction and clarity over static text. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FAF7F2;
+            color: #4A4A4A;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .health-chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 500px;
+            max-height: 600px;
+        }
+        .nav-link {
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #D97706; 
+            border-bottom-color: #D97706;
+        }
+        .food-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .food-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-[#FAF7F2] shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-amber-700">Guia Seminal</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#basics" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 border-b-2 border-transparent">O Básico</a>
+                        <a href="#science" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 border-b-2 border-transparent">A Ciência</a>
+                        <a href="#guide" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 border-b-2 border-transparent">Guia Interativo</a>
+                        <a href="#health" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 border-b-2 border-transparent">Saúde e Conclusão</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <select id="mobile-nav" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-600 focus:border-amber-600 block w-full p-2.5">
+                        <option value="#basics">O Básico</option>
+                        <option value="#science">A Ciência</option>
+                        <option value="#guide">Guia Interativo</option>
+                        <option value="#health">Saúde e Conclusão</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="py-16 md:py-24 bg-amber-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl md:text-5xl font-bold text-amber-800 tracking-tight">A Influência da Dieta no Sabor do Sêmen</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-600">Uma exploração interativa da ciência e dos mitos que ligam o que comemos às características do esperma.</p>
+            </div>
+        </section>
+
+        <section id="basics" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-gray-800">O Básico: Do que é Feito o Sêmen?</h3>
+                    <p class="mt-2 text-lg text-gray-600 max-w-3xl mx-auto">Antes de falarmos de sabor, é essencial compreender a complexa composição do fluido seminal. Não é apenas o que parece ser. Esta secção detalha os seus principais componentes e como eles influenciam o seu sabor natural.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="text-center md:text-left">
+                        <h4 class="text-2xl font-semibold mb-4 text-gray-700">A Composição em Detalhe</h4>
+                        <p class="mb-4 text-gray-600">Contrariamente à crença popular, os espermatozoides constituem uma fração minúscula do sêmen (1-5%). A maior parte é o plasma seminal, um cocktail nutritivo secretado por várias glândulas, desenhado para proteger e alimentar os espermatozoides.</p>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="text-amber-600 font-bold mr-2 text-lg">●</span> <strong>Vesículas Seminais (65-75%):</strong> Produzem frutose (açúcar), a principal fonte de energia e doçura.</li>
+                            <li class="flex items-start"><span class="text-sky-600 font-bold mr-2 text-lg">●</span> <strong>Próstata (25-30%):</strong> Fornece ácido cítrico, zinco e enzimas, contribuindo para o sabor salgado e a textura.</li>
+                            <li class="flex items-start"><span class="text-gray-500 font-bold mr-2 text-lg">●</span> <strong>Espermatozoides e outras glândulas (~5%):</strong> A parte reprodutiva e outros fluidos lubrificantes.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="chart-container">
+                            <canvas id="compositionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-20">
+                    <h4 class="text-2xl font-semibold text-center mb-8 text-gray-700">A Química do Sabor: Doce, Salgado e Amargo</h4>
+                    <div class="grid md:grid-cols-3 gap-8 text-center">
+                        <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <span class="text-5xl mb-4 block">🍬</span>
+                            <h5 class="text-xl font-bold text-green-600">Doce</h5>
+                            <p class="text-gray-600 mt-2">A <strong>frutose</strong>, um açúcar simples produzido pelas vesículas seminais, é a principal fonte de energia dos espermatozoides e confere ao sêmen a sua doçura de base.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <span class="text-5xl mb-4 block">🧂</span>
+                            <h5 class="text-xl font-bold text-blue-600">Salgado</h5>
+                            <p class="text-gray-600 mt-2">Minerais como <strong>sódio, zinco e potássio</strong>, provenientes da próstata, são vitais para a função espermática e responsáveis pelo gosto salgado e por vezes metálico.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <span class="text-5xl mb-4 block">🍋</span>
+                            <h5 class="text-xl font-bold text-red-600">Amargo</h5>
+                            <p class="text-gray-600 mt-2">O <strong>pH alcalino</strong> (7,2-8,0) é crucial para neutralizar a acidez vaginal e proteger os espermatozoides, mas é também a principal fonte do sabor amargo ou adstringente.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-20">
+                    <h4 class="text-2xl font-semibold text-center mb-8 text-gray-700">A Via Metabólica: Da Boca à Secreção</h4>
+                     <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">A ideia de que a dieta altera o sabor do sêmen é biologicamente plausível. Os compostos dos alimentos são absorvidos pela corrente sanguínea e depois utilizados pelas glândulas para produzir o plasma seminal. Este processo é a chave para compreender como um ananás pode, teoricamente, influenciar o sabor final.</p>
+                    <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center">
+                        <div class="bg-white p-4 rounded-full shadow-md w-32 h-32 flex items-center justify-center"><span>🍽️ Alimento</span></div>
+                        <div class="text-4xl text-amber-600 font-light">→</div>
+                        <div class="bg-white p-4 rounded-full shadow-md w-32 h-32 flex items-center justify-center"><span>🩸 Sangue</span></div>
+                        <div class="text-4xl text-amber-600 font-light">→</div>
+                        <div class="bg-white p-4 rounded-full shadow-md w-32 h-32 flex items-center justify-center"><span>🏭 Glândulas</span></div>
+                        <div class="text-4xl text-amber-600 font-light">→</div>
+                        <div class="bg-white p-4 rounded-full shadow-md w-32 h-32 flex items-center justify-center"><span>💧 Sêmen</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="science" class="py-16 md:py-24 bg-amber-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-gray-800">A Ciência: Facto vs. Crença Popular</h3>
+                    <p class="mt-2 text-lg text-gray-600 max-w-3xl mx-auto">Embora a teoria seja plausível, o que diz a investigação científica? Esta secção separa o que é comprovado pela ciência do que permanece no domínio anedótico, com base nos pareceres de especialistas e analogias com outros fluidos corporais.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-lg shadow-xl border-t-4 border-green-500">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-4">✅ Facto: Dieta Afeta a QUALIDADE do Sêmen</h4>
+                        <p class="text-gray-600 mb-4">Este campo é vastamente estudado. A ciência comprova que a dieta tem um impacto direto e mensurável na saúde do esperma.</p>
+                        <ul class="space-y-2 list-disc list-inside text-gray-600">
+                            <li>Dietas ricas em <strong>antioxidantes</strong> (frutas, vegetais) melhoram a motilidade e morfologia.</li>
+                            <li><strong>Ácidos gordos Ómega-3</strong> (peixe, nozes) estão ligados a esperma mais saudável.</li>
+                            <li>Dietas com alto teor de <strong>gordura saturada</strong> e alimentos processados diminuem a contagem de espermatozoides.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-xl border-t-4 border-amber-500">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-4">🤔 Crença: Dieta Afeta o SABOR do Sêmen</h4>
+                        <p class="text-gray-600 mb-4">Apesar da forte crença popular e da plausibilidade biológica, <strong>não existem estudos clínicos rigorosos</strong> que confirmem esta ligação.</p>
+                        <ul class="space-y-2 list-disc list-inside text-gray-600">
+                            <li>As alegações são baseadas em <strong>relatos anedóticos</strong> e na lógica do metabolismo.</li>
+                            <li>Urologistas consideram a ligação "altamente provável", mas "não comprovada cientificamente".</li>
+                            <li>A falta de estudos deve-se a complexidades éticas e baixa prioridade de investigação.</li>
+                        </ul>
+                    </div>
+                </div>
+                 <div class="mt-16 text-center">
+                    <h4 class="text-2xl font-semibold mb-4 text-gray-700">A Lógica da Analogia</h4>
+                    <p class="text-gray-600 max-w-3xl mx-auto">Se a dieta altera outros fluidos corporais, por que não o sêmen? A ciência já provou que alimentos alteram o cheiro da urina (espargos), do suor (alho) e até o sabor do leite materno. A inferência de que o mesmo acontece com o sêmen é a conclusão mais lógica.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="guide" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-gray-800">Guia Interativo de Alimentos</h3>
+                    <p class="mt-2 text-lg text-gray-600 max-w-3xl mx-auto">Explore os alimentos e substâncias que, segundo a crença popular e a lógica bioquímica, podem influenciar o sabor do sêmen. Use os filtros para ver o que pode ajudar ou prejudicar. Clique num cartão para mais detalhes.</p>
+                </div>
+
+                <div class="flex justify-center space-x-4 mb-8">
+                    <button id="filter-all" class="px-6 py-2 bg-amber-600 text-white font-semibold rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">Todos</button>
+                    <button id="filter-good" class="px-6 py-2 bg-green-600 text-white font-semibold rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">👍 Melhora</button>
+                    <button id="filter-bad" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">👎 Piora</button>
+                </div>
+
+                <div id="food-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                </div>
+            </div>
+        </section>
+
+        <section id="health" class="py-16 md:py-24 bg-amber-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-gray-800">Sabor vs. Saúde: A Conexão Holística</h3>
+                    <p class="mt-2 text-lg text-gray-600 max-w-3xl mx-auto">A busca por um sabor melhor pode ser o catalisador para uma saúde melhor. As dietas que a crença popular associa a um bom sabor são as mesmas que a ciência comprova serem benéficas para a qualidade do esperma e a saúde geral.</p>
+                </div>
+                <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-2xl">
+                    <h4 class="text-xl sm:text-2xl font-semibold text-center mb-2 text-gray-700">Impacto Comparativo na Saúde vs. Sabor</h4>
+                    <p class="text-center text-gray-500 mb-6 text-sm sm:text-base">Este gráfico compara o impacto comprovado na **Qualidade do Sêmen** (científico) com o impacto reportado no **Sabor** (anedótico).</p>
+                    <div class="health-chart-container">
+                        <canvas id="healthChart"></canvas>
+                    </div>
+                </div>
+                <div class="mt-16 text-center max-w-4xl mx-auto">
+                    <h4 class="text-2xl font-bold text-gray-800 mb-4">Conclusão: Equilibrar Expectativas</h4>
+                    <p class="text-gray-600 text-lg">A abordagem mais sensata é usar este conhecimento como um guia para um estilo de vida mais saudável. As alterações de sabor são provavelmente subtis. No entanto, ao priorizar uma dieta rica em frutas e vegetais, manter-se hidratado e evitar excessos, não está apenas a tentar modular o sabor — está a investir ativamente na sua saúde reprodutiva e bem-estar geral. A dieta que promove um corpo saudável é a mesma que promove um sêmen saudável.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>Este guia é para fins informativos e baseia-se em dados de domínio público e pareceres de especialistas. Não substitui o conselho médico profissional.</p>
+            <p class="mt-2 text-sm text-gray-400">&copy; 2024 Guia Interativo Seminal. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const foodData = [
+                { name: 'Abacaxi', icon: '🍍', category: 'good', effect: 'Mais doce', mechanism: 'Rico em açúcares naturais e água; pode ajudar a equilibrar o pH alcalino.' },
+                { name: 'Canela', icon: '🌿', category: 'good', effect: 'Mais aromático', mechanism: 'Compostos aromáticos voláteis podem mascarar outros sabores.' },
+                { name: 'Água', icon: '💧', category: 'good', effect: 'Mais suave, neutro', mechanism: 'Dilui a concentração de minerais e compostos alcalinos, suavizando o sabor.' },
+                { name: 'Outras Frutas', icon: '🍓', category: 'good', effect: 'Mais doce', mechanism: 'Ricas em açúcares (frutose), água e vitaminas antioxidantes.' },
+                { name: 'Salsinha', icon: '🌱', category: 'good', effect: 'Mais fresco', mechanism: 'Óleos essenciais e clorofila podem conferir um sabor mais "limpo".' },
+                { name: 'Álcool', icon: '🍺', category: 'bad', effect: 'Amargo, ácido', mechanism: 'Metabólitos amargos e desidratação concentram sabores negativos.' },
+                { name: 'Café', icon: '☕', category: 'bad', effect: 'Amargo', mechanism: 'Excreção de metabólitos amargos derivados da cafeína.' },
+                { name: 'Tabaco', icon: '🚬', category: 'bad', effect: 'Ranço, amargo', mechanism: 'Inúmeras toxinas entram na corrente sanguínea e são excretadas.' },
+                { name: 'Alho & Cebola', icon: '🧅', category: 'bad', effect: 'Pungente, sulfuroso', mechanism: 'Excreção de compostos de enxofre voláteis.' },
+                { name: 'Carne Vermelha', icon: '🥩', category: 'bad', effect: 'Salgado, forte', mechanism: 'A digestão de proteína animal pode levar à excreção de amónia.' },
+                { name: 'Laticínios', icon: '🧀', category: 'bad', effect: 'Salgado, ácido', mechanism: 'O consumo excessivo pode contribuir para um sabor mais concentrado.' },
+                { name: 'Frituras', icon: '🍟', category: 'bad', effect: 'Ranço, "pesado"', mechanism: 'Sobrecarga do sistema metabólico e ambiente corporal mais ácido.' },
+            ];
+
+            const foodGrid = document.getElementById('food-grid');
+            const filterAll = document.getElementById('filter-all');
+            const filterGood = document.getElementById('filter-good');
+            const filterBad = document.getElementById('filter-bad');
+
+            const createFoodCard = (food) => {
+                const card = document.createElement('div');
+                card.className = `food-card bg-white p-4 rounded-lg shadow-md text-center cursor-pointer border-b-4 ${food.category === 'good' ? 'border-green-500' : 'border-red-500'}`;
+                card.dataset.category = food.category;
+                card.innerHTML = `
+                    <span class="text-5xl block mb-2">${food.icon}</span>
+                    <h5 class="font-bold text-gray-800">${food.name}</h5>
+                    <div class="details text-sm text-gray-500 mt-2" style="display: none;">
+                        <p><strong>Efeito:</strong> ${food.effect}</p>
+                        <p><strong>Mecanismo:</strong> ${food.mechanism}</p>
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    const details = card.querySelector('.details');
+                    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+                });
+                return card;
+            };
+
+            const renderFoodCards = (filter = 'all') => {
+                foodGrid.innerHTML = '';
+                foodData
+                    .filter(food => filter === 'all' || food.category === filter)
+                    .forEach(food => foodGrid.appendChild(createFoodCard(food)));
+            };
+
+            filterAll.addEventListener('click', () => renderFoodCards('all'));
+            filterGood.addEventListener('click', () => renderFoodCards('good'));
+            filterBad.addEventListener('click', () => renderFoodCards('bad'));
+
+            renderFoodCards();
+
+            const compositionCtx = document.getElementById('compositionChart').getContext('2d');
+            new Chart(compositionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Vesículas Seminais', 'Próstata', 'Outros'],
+                    datasets: [{
+                        label: 'Composição do Sêmen',
+                        data: [70, 25, 5],
+                        backgroundColor: [
+                            '#F59E0B', 
+                            '#0284C7',
+                            '#6B7280'  
+                        ],
+                        borderColor: '#FAF7F2',
+                        borderWidth: 4,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#4A4A4A',
+                                font: {
+                                    family: "'Poppins', sans-serif"
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const healthData = {
+                labels: ['Frutas', 'Água', 'Álcool', 'Tabaco', 'Carne Vermelha', 'Gorduras'],
+                datasets: [
+                    {
+                        label: 'Impacto no Sabor (Anedótico)',
+                        data: [2, 1, -2, -2, -1, -1],
+                        backgroundColor: 'rgba(245, 158, 11, 0.6)', 
+                        borderColor: 'rgba(245, 158, 11, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Impacto na Qualidade (Científico)',
+                        data: [2, 1, -2, -3, -1, -2],
+                        backgroundColor: 'rgba(2, 132, 199, 0.6)',
+                        borderColor: 'rgba(2, 132, 199, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            };
+
+            const healthCtx = document.getElementById('healthChart').getContext('2d');
+            new Chart(healthCtx, {
+                type: 'bar',
+                data: healthData,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            ticks: {
+                                callback: function(value) {
+                                    const labels = { '-3': 'Muito Negativo', '-2': 'Negativo', '-1': 'Pot. Negativo', '0': 'Neutro', '1': 'Positivo', '2': 'Muito Positivo' };
+                                    return labels[value] || '';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        y: {
+                           grid: {
+                                display: false
+                           }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#4A4A4A'
+                            }
+                        },
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    const value = context.raw;
+                                    const labels = { '-3': 'Muito Negativo', '-2': 'Negativo', '-1': 'Potencialmente Negativo', '0': 'Neutro', '1': 'Positivo', '2': 'Muito Positivo' };
+                                    if (value !== null) {
+                                        label += labels[value];
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.addEventListener('change', (e) => {
+                window.location.hash = e.target.value;
+            });
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.4
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
